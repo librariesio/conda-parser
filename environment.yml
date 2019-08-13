@@ -1,0 +1,20 @@
+name: conda-parser
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - black
+  - coverage
+  - flask
+  - gunicorn
+  - isort
+  - libiconv
+  - nginx
+  - pip
+  - pytest
+  - pytest-flask
+  - pytest-cov
+  - python=3.7.4
+  - pyyaml
+  - yaml

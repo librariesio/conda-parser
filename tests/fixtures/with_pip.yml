@@ -1,0 +1,6 @@
+name: only-numpy
+channels:
+  - anaconda
+dependencies:
+  - pip:
+    - numpy
