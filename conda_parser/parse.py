@@ -64,7 +64,7 @@ def parse_file(file: typing.BinaryIO) -> dict:
 def parse_dependencies(raw_dependencies: list) -> dict:
     """
         Loop through the dependencies list, get the name/requirement
-        Filter out the `pip` key,
+        Filter out anything that is not a string (such as pip: key)
 
         Parameters:
             raw_dependencies: a list of dependency strings
