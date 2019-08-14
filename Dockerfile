@@ -17,7 +17,8 @@ ENV _CE_CONDA=''
 ENV CONDA_PYTHON_EXE='/usr/local/bin/python'
 ENV FLASK_APP=conda_parser
 
-COPY . /app
+COPY conda_parser/ /app/conda_parser
+COPY gunicorn_start.sh /app/gunicorn_start.sh
 
 # The fun part
 CMD ["./gunicorn_start.sh"]
