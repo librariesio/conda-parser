@@ -15,10 +15,13 @@ ENV CONDA_EXE='/usr/local/bin/conda'
 ENV _CE_M=''
 ENV _CE_CONDA=''
 ENV CONDA_PYTHON_EXE='/usr/local/bin/python'
+
+# Flask ENVS
 ENV FLASK_APP=conda_parser
 
-COPY conda_parser/ /app/conda_parser
+# Copy only files we need, if you add a new file outside of these, please make sure it is copied
 COPY gunicorn_start.sh /app/gunicorn_start.sh
+COPY conda_parser/ /app/conda_parser
 
 # The fun part
 CMD ["./gunicorn_start.sh"]
