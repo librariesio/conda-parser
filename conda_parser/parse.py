@@ -76,8 +76,8 @@ def parse_dependencies(raw_dependencies: list) -> dict:
     dependencies = []
 
     for dep in raw_dependencies:
-        if isinstance(dep, dict) and dep.get("pip"):
-            # Ignore the pip directive for now.
+        if isinstance(dep, dict):
+            # Ignore any dictionary directives for now.
             continue
 
         if isinstance(dep, str):
