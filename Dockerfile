@@ -1,8 +1,7 @@
 FROM conda/miniconda3
-COPY . /app
-WORKDIR /app
-RUN chmod +x ./gunicorn_start.sh
+COPY environment.yml /app/
 
+WORKDIR /app
 # create environment
 RUN conda env create -f environment.yml
 
@@ -16,8 +15,9 @@ ENV CONDA_EXE='/usr/local/bin/conda'
 ENV _CE_M=''
 ENV _CE_CONDA=''
 ENV CONDA_PYTHON_EXE='/usr/local/bin/python'
-
 ENV FLASK_APP=conda_parser
+
+COPY . /app
 
 # The fun part
 CMD ["./gunicorn_start.sh"]
