@@ -41,8 +41,7 @@ The server will be running, and any time you want to make a change to the code, 
 
 You can test that it works by running this curl command:
 
-    $ curl -X POST -F "file=@environment.yml" http://localhost:5000/parse        # Always goes to latest version
-    $ curl -X POST -F "file=@environment.yml" http://localhost:5000/parse/v1.0
+    $ curl -X POST -F "file=@environment.yml" http://localhost:5000/parse
 
 ## Development
 

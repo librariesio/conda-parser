@@ -5,6 +5,7 @@ channels:
   - defaults
 dependencies:
   - black
+  - conda
   - coverage
   - flask
   - gunicorn
@@ -14,7 +15,9 @@ dependencies:
   - pip
   - pytest
   - pytest-flask
+  - pytest-mock
   - pytest-cov
   - python=3.7.4
   - pyyaml
+  - toolz 0.10.0
   - yaml

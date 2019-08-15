@@ -22,21 +22,15 @@ def _post_file(client, name, view="parse"):
     )
 
 
-def test_parse(client):
+def test_parse(client, mocker, fake_numpy_deps):
     """ testing parsing POST """
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_numpy_deps)
+
     response = _post_file(client, "tests/fixtures/just_numpy.yml", "parse")
-    assert response.status == "200 OK"
-    assert json.loads(response.data)["channels"] == ["anaconda"]
-    assert json.loads(response.data)["dependencies"] == [
-        {"name": "numpy", "requirement": ">= 0"}
-    ]
 
-
-def test_parse_v10(client):
-    """ testing parsing POST """
-    response = _post_file(client, "tests/fixtures/just_numpy.yml", "parse_v10")
     assert response.status == "200 OK"
-    assert json.loads(response.data)["channels"] == ["anaconda"]
-    assert json.loads(response.data)["dependencies"] == [
-        {"name": "numpy", "requirement": ">= 0"}
-    ]
+
+    data = json.loads(response.data)
+
+    assert data["channels"] == ["anaconda"]
+    assert {"name": "numpy-base", "requirement": "1.16.4"} in data["dependencies"]
