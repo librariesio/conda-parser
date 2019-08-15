@@ -1,19 +1,4 @@
-# conftest.py - This is used to configure pytest to have a fixture for the Flask App
-import pytest
-
-from conda_parser import create_app
-
-
-@pytest.fixture
-def app():
-    app = create_app()
-    app.debug = True
-    return app
-
-
-@pytest.fixture
-def fake_numpy_deps():
-    """ Returns a lambda that returns this faked data so we can mock side_effect it"""
+def mock_dependencies_numpy():
     deps = [
         ("blas", "1.0"),
         ("ca-certificates", "2019.5.15"),
@@ -41,15 +26,4 @@ def fake_numpy_deps():
         ("mkl_fft", "1.0.12"),
         ("numpy", "1.16.4"),
     ]
-    return lambda: [dict(name=v[0], version=v[1]) for v in deps]
-
-
-@pytest.fixture
-def fake_sqlite_deps():
-    return lambda: [
-        {"name": "libcxxabi", "version": "8.0.0"},
-        {"name": "libcxx", "version": "8.0.0"},
-        {"name": "ncurses", "version": "6.1"},
-        {"name": "readline", "version": "8.0"},
-        {"name": "sqlite", "version": "3.29.0"},
-    ]
+    return [dict(name=v[0], version=v[1]) for v in deps]

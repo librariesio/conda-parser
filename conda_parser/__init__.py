@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from .parse import parse_file
+from .parse import parse_environment
 
 
 def create_app():
@@ -12,21 +12,16 @@ def create_app():
 
     @app.route("/parse", methods=["POST"])
     def parse():
-        """ Always make `/parse` go to latest version """
-        return parse_v10()
-
-    @app.route("/parse/v1.0", methods=["POST"])
-    def parse_v10():
         """
             Page for posting a file to to get the Conda dependencies back.
-            Tests just by looking at file as as string, not calling conda.
-    
+            Solves a conda environment
+
             POST Parameters:
                 file: an environment.y(a)ml file
-            Returns: 
+            Returns:
                 json with "error" or with "dependencies"/"channels"
         """
-        return parse_file(request.files.get("file"))
+        return parse_environment(request.files.get("file"))
 
     return app
 
