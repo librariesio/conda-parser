@@ -19,5 +19,4 @@ dependencies:
   - pytest-cov
   - python=3.7.4
   - pyyaml
-  - toolz 0.10.0
   - yaml
