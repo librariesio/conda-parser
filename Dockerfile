@@ -21,6 +21,10 @@ ENV FLASK_APP=conda_parser
 
 # Copy only files we need, if you add a new file outside of these, please make sure it is copied
 COPY gunicorn_start.sh /app/gunicorn_start.sh
+COPY conftest.py /app/conftest.py
+
+# Testing
+COPY tests/ /app/tests/
 COPY conda_parser/ /app/conda_parser
 
 # The fun part

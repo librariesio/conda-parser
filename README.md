@@ -71,12 +71,9 @@ This application uses `pytest` and `coverage.py`, to run tests, activate the con
 
 ### Code Style
 
-We use `isort` and `black` for sorting and formatting. Imports are sorted, and code is formatted by running the following line:
+We use `black` for formatting. 
 
-    $ isort -y && black .
-
-This will sort the imports, and black will assert it's style choices on those import lines, so running both is needed.
-
+    $ black .
 
 ### Note on Patches/Pull Requests
 
@@ -84,7 +81,7 @@ This will sort the imports, and black will assert it's style choices on those im
  * Make your feature addition or bug fix.
  * Add tests if adding code.
  * Add documentation if necessary.
- * Make sure you run `isort -y && black .` before submitting a pull request.
+ * Make sure you run `black .` before submitting a pull request.
  * Send a pull request. Bonus points for topic branches.
 
 ## Copyright

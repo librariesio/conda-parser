@@ -7,14 +7,13 @@ certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
 Click==7.0
--e git://github.com/conda/conda.git#egg=conda
+git+git://github.com/conda/conda.git#egg=conda
 coverage==4.5.3
 cryptography==2.7
 Flask==1.1.1
 gunicorn==19.9.0
 idna==2.8
 importlib-metadata==0.19
-isort==4.3.21
 itsdangerous==1.1.0
 Jinja2==2.10.1
 libarchive-c==2.8
@@ -37,7 +36,6 @@ requests==2.22.0
 ruamel-yaml==0.15.46
 six==1.12.0
 toml==0.10.0
-toolz==0.10.0
 tqdm==4.32.1
 urllib3==1.24.2
 wcwidth==0.1.7

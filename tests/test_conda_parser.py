@@ -47,7 +47,7 @@ def test_parse_environment_errors_wrong_filetype():
     Checking a few of the standard errors
     - Disallowed filename
     """
-    with open("README.md", "rb") as f:
+    with open("tests/fixtures/not_a_yaml.md", "rb") as f:
         parsed = parse_environment(f)
     assert parsed["error"] == "Please provide a `.yml` or `.yaml` environment file"
 

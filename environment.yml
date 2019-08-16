@@ -9,7 +9,6 @@ dependencies:
   - coverage
   - flask
   - gunicorn
-  - isort
   - libiconv
   - nginx
   - pip
