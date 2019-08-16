@@ -9,7 +9,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
 # Distribution / packaging
 .Python
 build/
@@ -31,7 +30,6 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -45,17 +43,11 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-
 # Flask stuff:
 instance/
 
-
 # Sphinx documentation
 docs/_build/
-
-
-
-
 
 # Environments
 .env
