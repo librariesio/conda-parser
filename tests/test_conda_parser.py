@@ -4,6 +4,7 @@ from conda_parser.parse import (
     FILTER_KEYS,
     allowed_filename,
     parse_environment,
+    clean_out_pip,
     read_environment,
     solve_environment,
 )
@@ -84,3 +85,9 @@ def test_solve_environment(mocker, fake_sqlite_deps):
         {"channels": ["conda-forge"], "dependencies": ["sqlite"]}
     )
     assert {"name": "ncurses", "requirement": "6.1"} in sqlite_dependencies
+
+
+def test_clean_out_pip():
+    """ testing removing pip from specs """
+    specs = ["zlib=1.2.11=0", {"pip": ["werkzeug==0.12.2"]}]
+    assert clean_out_pip(specs) == ["zlib=1.2.11=0"]

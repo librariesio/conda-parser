@@ -1,6 +1,8 @@
-name: only-numpy
+name: with-pip
 channels:
-  - anaconda
+- defaults
 dependencies:
-  - pip:
-    - numpy
+- zlib=1.2.11=0
+- pip:
+  - werkzeug==0.12.2
+
