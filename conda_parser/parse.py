@@ -62,10 +62,16 @@ def parse_environment(file: typing.BinaryIO) -> dict:
     }
 
 
+def clean_out_pip(specs: list) -> list:
+    """ Not supporting pip for now """
+    return [spec for spec in specs if isinstance(spec, str)]
+
+
 def solve_environment(environment: dict) -> dict:
     prefix = environment.get("prefix", ".")
     channels = environment["channels"]
-    specs = environment["dependencies"]
+    # Ignore pip for now.
+    specs = clean_out_pip(environment["dependencies"])
 
     dependencies = Solver(prefix, channels, specs_to_add=specs).solve_final_state()
 
