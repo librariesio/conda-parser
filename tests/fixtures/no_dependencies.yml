@@ -1,0 +1,5 @@
+name: no-dependencies
+channels:
+  - anaconda
+  - defaults
+prefix: /home/tyrel/anaconda3/envs/conda-parser

@@ -1,0 +1,8 @@
+name: with-pip
+channels:
+- defaults
+dependencies:
+- zlib=1.2.11=0
+- pip:
+  - werkzeug==0.12.2
+

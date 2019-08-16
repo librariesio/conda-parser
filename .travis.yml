@@ -1,0 +1,10 @@
+language: python
+dist: xenial
+services:
+  - docker
+python:
+  - "3.7.4"
+before_install:
+  - docker build -t librariesio/conda-parser .
+script:
+  - docker run -it librariesio/conda-parser /bin/sh -c "pytest"
