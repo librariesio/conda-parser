@@ -100,7 +100,7 @@ def resolve_manifest_versions(specs: list, dependencies: list) -> list:
 
         returns a list of {"name": name, "requirement": requirement} values.
     """
-    reg = re.compile(r"([\w\-_\.]+).*?")
+    reg = re.compile(r"[\w\-\.]+")
     spec_names = [reg.match(spec).group(0) for spec in specs]
 
     return [req for req in dependencies if req["name"] in spec_names]
