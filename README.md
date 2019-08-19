@@ -8,7 +8,7 @@ A tiny python web service for parsing dependency information from `environment.y
 
 You can use Docker to run conda-parser
 
-First, install Docker. If you've got run macOS or Windows, Docker for Mac/Windows makes this really easy. (If you have Windows Home Edition, you'll need to download and run Docker Toolbox.)
+First, install Docker. If you run macOS or Windows, Docker for Mac/Windows makes this really easy. (If you have Windows Home Edition, you'll need to download and run Docker Toolbox.)
 
 Then, run:
 
