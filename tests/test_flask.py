@@ -34,4 +34,4 @@ def test_parse(client, mocker, fake_numpy_deps):
     data = json.loads(response.data)
 
     assert data["channels"] == ["anaconda"]
-    assert {"name": "numpy-base", "requirement": "1.16.4"} in data["dependencies"]
+    assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
