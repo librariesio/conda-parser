@@ -39,9 +39,25 @@ The server will be running, and any time you want to make a change to the code, 
 
 ## Consuming the API
 
-You can test that it works by running this curl command:
+You can test that it works by running one of these curl commands:
 
-    $ curl -X POST -F "file=@environment.yml" http://localhost:5000/parse
+```console
+$ curl -X POST -F "file=@environment.yml" http://localhost:5000/parse # Post multipart
+
+$ curl -X POST -F "file=<environment.yml;filename=environment.yml" http://localhost:5000/parse # Post urlencoded
+```
+
+To POST from something not curl (for example ruby `typhoeus`) please post a body with a file and a filename as such:
+
+```ruby
+# Post urlencoded
+Typhoeus.post("http://localhost:5000/parse", body: {file: file_string, filename: 'environment.yml'})
+
+# post multipart
+Typhoeus.post("http://localhost:5000/parse", body: {file: File.open(filename, "r")})
+```
+
+(Both `multipart/form-data` and `application/x-www-form-urlencoded` are supported)
 
 ## Development
 
@@ -71,7 +87,7 @@ This application uses `pytest` and `coverage.py`, to run tests, activate the con
 
 ### Code Style
 
-We use `black` for formatting. 
+We use `black` for formatting.
 
     $ black .
 

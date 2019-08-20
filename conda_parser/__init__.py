@@ -16,12 +16,25 @@ def create_app():
             Page for posting a file to to get the Conda dependencies back.
             Solves a conda environment
 
-            POST Parameters:
-                file: an environment.y(a)ml file
+            POST Parameters two options:
+                multipart/form-data:
+                    file: an environment.y(a)ml file
+                application/x-www-form-urlencoded:
+                    file: the text of the environment file
+                    filename: the filename (needs to be .yml or .yaml)
             Returns:
                 json with "error" or with "dependencies"/"channels"
         """
-        return parse_environment(request.files.get("file"))
+        # get the file from either files or form
+        if request.content_type.startswith("application/x-www-form-urlencoded"):
+            body = request.form.get("file")
+            filename = request.form.get("filename")
+        elif request.content_type.startswith("multipart/form-data"):
+            f = request.files.get("file")
+            filename = f.filename if hasattr(f, "filename") else f.name
+            body = f.read()
+
+        return parse_environment(filename, body)
 
     return app
 

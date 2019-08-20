@@ -18,16 +18,16 @@ def allowed_filename(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def read_environment(file: typing.BinaryIO) -> dict:
+def read_environment(environment_file: str) -> dict:
     """
         Loads the file into yaml and returns the keys that we care about.
             example: ignores `prefix:` settings in environment.yml
     """
-    environment = yaml.load(file.read(), Loader=Loader)
+    environment = yaml.load(environment_file, Loader=Loader)
     return {k: v for k, v in environment.items() if k in FILTER_KEYS}
 
 
-def parse_environment(file: typing.BinaryIO) -> dict:
+def parse_environment(filename: str, environment_file: str) -> dict:
     """
         Loads a file, checks some common error conditions, tries its best
         to see if it is an actual Conda environment.yml file, and if it is,
@@ -39,18 +39,16 @@ def parse_environment(file: typing.BinaryIO) -> dict:
             - dict of "lockfile", "manifest", "channels"
     """
     # we need the `file` field
-    if not file:
+    if not environment_file:
         return {"error": "No `file` provided."}
 
     # file must be in .yaml or .yml format
-    # Support BinaryIO and BufferedReader
-    filename = file.filename if hasattr(file, "filename") else file.name
-    if not allowed_filename(filename):
+    if not filename or not allowed_filename(filename):
         return {"error": "Please provide a `.yml` or `.yaml` environment file"}
 
     # Parse the file
     try:
-        environment = read_environment(file)
+        environment = read_environment(environment_file)
     except yaml.YAMLError as exc:
         return {"error": f"YAML parsing error in environment file: {exc}"}
 
@@ -94,9 +92,9 @@ def solve_environment(environment: dict) -> dict:
 
 
 def resolve_manifest_versions(specs: list, dependencies: list) -> list:
-    """ 
+    """
         This resolves a manifest from what the environment.yml passed in
-        by finding the versions that were Solved        
+        by finding the versions that were Solved
 
         returns a list of {"name": name, "requirement": requirement} values.
     """
