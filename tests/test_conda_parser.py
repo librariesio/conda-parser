@@ -26,7 +26,7 @@ def test_allowed_filename_bad():
 def test_read_environment_filter_keys():
     """ Testing that read environment works and filters properly """
     with open("tests/fixtures/all_styles.yml", "rb") as all_styles:
-        environment = read_environment(all_styles)
+        environment = read_environment(all_styles.read())
 
     for key in environment.keys():
         assert key in FILTER_KEYS
@@ -38,7 +38,7 @@ def test_parse_environment_errors_no_file():
     Checking a few of the standard errors
     - No file provided
     """
-    parsed = parse_environment(None)
+    parsed = parse_environment(None, None)
     assert parsed["error"] == "No `file` provided."
 
 
@@ -48,7 +48,7 @@ def test_parse_environment_errors_wrong_filetype():
     - Disallowed filename
     """
     with open("tests/fixtures/not_a_yaml.md", "rb") as f:
-        parsed = parse_environment(f)
+        parsed = parse_environment("not_a_yaml.md", f)
     assert parsed["error"] == "Please provide a `.yml` or `.yaml` environment file"
 
 
@@ -58,7 +58,7 @@ def test_parse_environment_errors_yaml_error():
     - YAML errors
     """
     with open("tests/fixtures/bad_yaml.yml", "rb") as bad_yaml:
-        parsed = parse_environment(bad_yaml)
+        parsed = parse_environment("bad_yaml.yml", bad_yaml)
     assert parsed["error"].startswith(
         "YAML parsing error in environment file: while parsing a block collection"
     )
@@ -70,11 +70,8 @@ def test_parse_environment_errors_no_dependencies():
     - No dependencies in environment.yml
     """
     with open("tests/fixtures/no_dependencies.yml", "rb") as no_dependencies:
-        parsed = parse_environment(no_dependencies)
-    assert (
-        parsed["error"]
-        == "No `dependencies:` in your tests/fixtures/no_dependencies.yml"
-    )
+        parsed = parse_environment("no_dependencies.yml", no_dependencies)
+    assert parsed["error"] == "No `dependencies:` in your no_dependencies.yml"
 
 
 def test_solve_environment(mocker, fake_sqlite_deps):

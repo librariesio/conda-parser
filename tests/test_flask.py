@@ -11,7 +11,7 @@ def test_index(client):
     assert client.get(url_for("index")).status_code == 200
 
 
-def _post_file(client, name, view="parse"):
+def _post_multipart(client, name, view="parse"):
     with open(name, "rb") as all_styles:
         data = {"file": (io.BytesIO(all_styles.read()), name)}
 
@@ -23,11 +23,23 @@ def _post_file(client, name, view="parse"):
     )
 
 
-def test_parse(client, mocker, fake_numpy_deps):
+def _post_urlencoded(client, name, view="parse"):
+    with open(name, "rb") as all_styles:
+        data = {"file": all_styles.read(), "filename": name}
+
+    return client.post(
+        url_for(view),
+        data=data,
+        follow_redirects=True,
+        content_type="application/x-www-form-urlencoded",
+    )
+
+
+def test_parse_file(client, mocker, fake_numpy_deps):
     """ testing parsing POST """
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_numpy_deps)
 
-    response = _post_file(client, "tests/fixtures/just_numpy.yml", "parse")
+    response = _post_multipart(client, "tests/fixtures/just_numpy.yml", "parse")
 
     assert response.status == "200 OK"
 
