@@ -6,5 +6,5 @@ if [ -z ${PORT+x} ]; then PORT=5000; else echo "PORT is set to '$PORT'"; fi
 gunicorn --bind 0.0.0.0:$PORT \
   --bind unix:/app/conda_parser.sock \
   --error-logfile - \
-  --timeout=60 \
+  --timeout=90 \
   conda_parser.wsgi:app
