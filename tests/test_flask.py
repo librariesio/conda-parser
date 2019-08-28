@@ -86,6 +86,8 @@ def test_info_error(client, mocker, record_not_found):
         url_for("info", channel="anaconda", package="urllib3", version="==1.25.3"),
         follow_redirects=True,
     )
-    assert response.status == "200 OK"
     data = json.loads(response.data)
-    assert data["error"] == "Errror: urllib3==1.25.3 not found"
+
+    assert response.status == "404 NOT FOUND"
+    assert data["error"] == 404
+    assert data["text"] == "404 Not Found: Error: anaconda/urllib3==1.25.3 not found"

@@ -6,11 +6,8 @@ def package_info(channel: str, package: str, version: str) -> dict:
     # join the package and version together
     spec = f"{package}{version}"
 
-    try:
-        # solve the spec for this package.
-        packages = Solver(".", [channel], specs_to_add=[spec]).solve_final_state()
-    except ResolvePackageNotFound:
-        return {"error": f"Errror: {spec} not found"}
+    # solve the spec for this package.
+    packages = Solver(".", [channel], specs_to_add=[spec]).solve_final_state()
 
     # find the package passed in
     record = dict([dep for dep in packages if dep.name == package][0].dump())

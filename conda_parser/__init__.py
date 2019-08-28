@@ -1,8 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, abort
 
 from .parse import parse_environment
 from .info import package_info
 
+from conda.exceptions import ResolvePackageNotFound
 
 def create_app():
     app = Flask(__name__)
@@ -15,7 +16,10 @@ def create_app():
     @app.route("/info/<channel>/<package>", defaults={"version": ""})
     @app.route("/info/<package>", defaults={"version": "", "channel": "anaconda"})
     def info(channel, package, version):
-        return package_info(channel, package, version)
+        try:
+            return package_info(channel, package, version)
+        except ResolvePackageNotFound:
+            abort(404, description=f"Error: {channel}/{package}{version} not found")
 
     @app.route("/parse", methods=["POST"])
     def parse():
@@ -43,8 +47,13 @@ def create_app():
 
         return parse_environment(filename, body)
 
-    return app
+    @app.errorhandler(404)
+    def not_found(e):
+        # note that we set the 404 status explicitly
+        return jsonify(error=404, text=str(e)), 404
+    app.register_error_handler(404, not_found)
 
+    return app
 
 def main(debug=False):
     app = create_app()
