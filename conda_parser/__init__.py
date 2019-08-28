@@ -13,6 +13,7 @@ def create_app():
 
     @app.route("/info/<channel>/<package>/<version>")
     @app.route("/info/<channel>/<package>", defaults={"version": ""})
+    @app.route("/info/<package>", defaults={"version": "", "channel": "anaconda"})
     def info(channel, package, version):
         return package_info(channel, package, version)
 
