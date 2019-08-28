@@ -11,13 +11,9 @@ def create_app():
     def index():
         return "OK"
 
-    @app.route("/info/<channel>/<package>")
     @app.route("/info/<channel>/<package>/<version>")
-    def info():
-        channel = request.args.get("channel")
-        package = request.args.get("package")
-        version = request.args.get("version", default="")
-
+    @app.route("/info/<channel>/<package>", defaults={"version": ""})
+    def info(channel, package, version):
         return package_info(channel, package, version)
 
     @app.route("/parse", methods=["POST"])
