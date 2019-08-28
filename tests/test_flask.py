@@ -47,3 +47,40 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 
     assert data["channels"] == ["anaconda"]
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
+
+
+def test_info(client, mocker, solved_urllib3):
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
+
+    response = client.get(
+        url_for("info", channel="anaconda", package="urllib3"), follow_redirects=True
+    )
+    assert response.status == "200 OK"
+    data = json.loads(response.data)
+
+    assert data["license"] == "MIT"
+
+
+def test_info_version(client, mocker, solved_urllib3):
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
+
+    response = client.get(
+        url_for("info", channel="anaconda", package="urllib3", version="==1.25.3"),
+        follow_redirects=True,
+    )
+    assert response.status == "200 OK"
+    data = json.loads(response.data)
+
+    assert data["license"] == "MIT"
+
+
+def test_info_version(client, mocker, record_not_found):
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
+
+    response = client.get(
+        url_for("info", channel="anaconda", package="urllib3", version="==1.25.3"),
+        follow_redirects=True,
+    )
+    assert response.status == "200 OK"
+    data = json.loads(response.data)
+    assert data["error"] == "Errror: urllib3==1.25.3 not found"
