@@ -1,6 +1,7 @@
 from flask import Flask, request
 
 from .parse import parse_environment
+from .info import package_info
 
 
 def create_app():
@@ -9,6 +10,15 @@ def create_app():
     @app.route("/")
     def index():
         return "OK"
+
+    @app.route("/info/<channel>/<package>")
+    @app.route("/info/<channel>/<package>/<version>")
+    def info():
+        channel = request.args.get("channel")
+        package = request.args.get("package")
+        version = request.args.get("version", default="")
+
+        return package_info(channel, package, version)
 
     @app.route("/parse", methods=["POST"])
     def parse():
