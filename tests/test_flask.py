@@ -52,13 +52,6 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 def test_info(client, mocker, solved_urllib3):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
 
-    # just name
-    response = client.get(url_for("info", package="urllib3"), follow_redirects=True)
-    assert response.status == "200 OK"
-    data = json.loads(response.data)
-
-    assert data["license"] == "MIT"
-
     # name and channel
     response = client.get(
         url_for("info", channel="anaconda", package="urllib3"), follow_redirects=True

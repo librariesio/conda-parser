@@ -13,9 +13,8 @@ def create_app():
     def index():
         return "OK"
 
-    @app.route("/info/<channel>/<package>/<version>")
     @app.route("/info/<channel>/<package>", defaults={"version": ""})
-    @app.route("/info/<package>", defaults={"version": "", "channel": "anaconda"})
+    @app.route("/info/<channel>/<package>/<version>")
     def info(channel, package, version):
         try:
             return package_info(channel, package, version)
