@@ -17,7 +17,7 @@ def create_app():
     @app.route("/info/<channel>/<package>/<version>")
     def info(channel, package, version):
         try:
-            return package_info(channel, package, version)
+            return jsonify(package_info(channel, package, version)), 200
         except ResolvePackageNotFound:
             abort(404, description=f"Error: {channel}/{package}{version} not found")
 
@@ -45,7 +45,7 @@ def create_app():
             filename = f.filename if hasattr(f, "filename") else f.name
             body = f.read()
 
-        return parse_environment(filename, body)
+        return jsonify(parse_environment(filename, body)), 200
 
     @app.errorhandler(404)
     def not_found(e):
