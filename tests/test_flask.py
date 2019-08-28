@@ -49,7 +49,7 @@ def test_parse_file(client, mocker, fake_numpy_deps):
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
 
 
-def test_info(client, mocker, solved_urllib3):
+def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
 
     # name and channel
@@ -70,6 +70,7 @@ def test_info(client, mocker, solved_urllib3):
     data = json.loads(response.data)
 
     assert data["license"] == "MIT"
+    assert data == expected_result_urllib3
 
 
 def test_info_error(client, mocker, record_not_found):
