@@ -53,14 +53,11 @@ def test_info(client, mocker, solved_urllib3):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
 
     # just name
-    response = client.get(
-        url_for("info", package="urllib3"), follow_redirects=True
-    )
+    response = client.get(url_for("info", package="urllib3"), follow_redirects=True)
     assert response.status == "200 OK"
     data = json.loads(response.data)
 
     assert data["license"] == "MIT"
-
 
     # name and channel
     response = client.get(
@@ -81,7 +78,7 @@ def test_info(client, mocker, solved_urllib3):
 
     assert data["license"] == "MIT"
 
-    
+
 def test_info_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
