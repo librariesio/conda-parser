@@ -69,7 +69,6 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
     assert response.status == "200 OK"
     data = json.loads(response.data)
 
-    assert data["license"] == "MIT"
     assert data == expected_result_urllib3
 
 
