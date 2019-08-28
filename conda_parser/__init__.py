@@ -5,6 +5,7 @@ from .info import package_info
 
 from conda.exceptions import ResolvePackageNotFound
 
+
 def create_app():
     app = Flask(__name__)
 
@@ -51,9 +52,11 @@ def create_app():
     def not_found(e):
         # note that we set the 404 status explicitly
         return jsonify(error=404, text=str(e)), 404
+
     app.register_error_handler(404, not_found)
 
     return app
+
 
 def main(debug=False):
     app = create_app()
