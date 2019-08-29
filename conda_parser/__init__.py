@@ -48,19 +48,14 @@ def create_app():
 
         try:
             return jsonify(parse_environment(filename, body)), 200
-        except CondaError as e:
-            abort(500, description=f"Error parsing environment: {e}")
+        except ResolvePackageNotFound as e:
+            abort(404, description=f"Error: Package(s) not found: {e}")
 
     @app.errorhandler(404)
     def not_found(e):
         return jsonify(error=404, text=str(e)), 404
 
-    @app.errorhandler(500)
-    def not_found(e):
-        return jsonify(error=500, text=str(e)), 500
-
     app.register_error_handler(404, not_found)
-    app.register_error_handler(500, not_found)
 
     return app
 

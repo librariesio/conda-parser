@@ -52,15 +52,15 @@ def test_parse_file(client, mocker, fake_numpy_deps):
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
 
 
-def test_parse_file_error(client, mocker, record_not_found):
+def test_parse_file_not_found(client, mocker, record_not_found):
     """ testing parsing POST """
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
     response = _post_urlencoded(client, "tests/fixtures/just_numpy.yml", "parse")
-    assert response.status == "500 INTERNAL SERVER ERROR"
+    assert response.status == "404 NOT FOUND"
     assert json.loads(response.data) == {
-        "error": 500,
-        "text": "500 Internal Server Error: Error parsing environment: \n  - whoami",
+        "error": 404,
+        "text": "404 Not Found: Error: Package(s) not found: \n  - whoami",
     }
 
 
