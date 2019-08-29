@@ -60,7 +60,7 @@ def test_parse_file_not_found(client, mocker, record_not_found):
     assert response.status == "404 NOT FOUND"
     assert json.loads(response.data) == {
         "error": 404,
-        "text": "404 Not Found: Error: Package(s) not found: \n  - whoami",
+        "text": "Error: Package(s) not found: \n  - whoami -> ==1.25.3",
     }
 
 
@@ -91,11 +91,11 @@ def test_info_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
     response = client.get(
-        url_for("info", channel="anaconda", package="urllib3", version="==1.25.3"),
+        url_for("info", channel="anaconda", package="whoami", version="==1.25.3"),
         follow_redirects=True,
     )
     data = json.loads(response.data)
 
     assert response.status == "404 NOT FOUND"
     assert data["error"] == 404
-    assert data["text"] == "404 Not Found: Error: anaconda/urllib3==1.25.3 not found"
+    assert data["text"] == "Error: Package(s) not found: \n  - whoami -> ==1.25.3"
