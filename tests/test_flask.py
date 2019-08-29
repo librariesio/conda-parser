@@ -39,6 +39,9 @@ def test_parse_file(client, mocker, fake_numpy_deps):
     """ testing parsing POST """
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_numpy_deps)
 
+    response = _post_urlencoded(client, "tests/fixtures/just_numpy.yml", "parse")
+    assert response.status == "200 OK"
+
     response = _post_multipart(client, "tests/fixtures/just_numpy.yml", "parse")
 
     assert response.status == "200 OK"
@@ -47,6 +50,18 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 
     assert data["channels"] == ["anaconda"]
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
+
+
+def test_parse_file_error(client, mocker, record_not_found):
+    """ testing parsing POST """
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
+
+    response = _post_urlencoded(client, "tests/fixtures/just_numpy.yml", "parse")
+    assert response.status == "500 INTERNAL SERVER ERROR"
+    assert json.loads(response.data) == {
+        "error": 500,
+        "text": "500 Internal Server Error: Error parsing environment: \n  - whoami",
+    }
 
 
 def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
