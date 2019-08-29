@@ -12,11 +12,20 @@ def package_info(channel: str, package: str, version: str) -> dict:
     first_package_record = [dep for dep in packages if dep.name == package][0]
     record = dict(first_package_record.dump())
 
-    # Clear out some unneeded keys
-    del record["arch"]
-    del record["build_number"]
-    del record["constrains"]
-    del record["fn"]
-    del record["subdir"]
-
-    return record
+    # Only keep needed keys.
+    KEYS = [
+        "build",
+        "channel",
+        "depends",
+        "license",
+        "license_family",
+        "md5",
+        "name",
+        "platform",
+        "sha256",
+        "size",
+        "timestamp",
+        "url",
+        "version",
+    ]
+    return {k: record[k] for k in KEYS}
