@@ -4,7 +4,6 @@ from .parse import parse_environment
 from .info import package_info
 
 from conda.exceptions import ResolvePackageNotFound
-from conda import CondaError
 
 
 def create_app():
