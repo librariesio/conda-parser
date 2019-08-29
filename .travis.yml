@@ -7,4 +7,4 @@ python:
 before_install:
   - docker build -t librariesio/conda-parser .
 script:
-  - docker run -it librariesio/conda-parser /bin/sh -c "pytest"
+  - docker run -it librariesio/conda-parser /bin/sh -c "black --check . && pytest"

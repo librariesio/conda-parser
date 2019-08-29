@@ -1,6 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, abort
 
 from .parse import parse_environment
+from .info import package_info
+
+from conda.exceptions import ResolvePackageNotFound
 
 
 def create_app():
@@ -9,6 +12,14 @@ def create_app():
     @app.route("/")
     def index():
         return "OK"
+
+    @app.route("/info/<channel>/<package>", defaults={"version": ""})
+    @app.route("/info/<channel>/<package>/<version>")
+    def info(channel, package, version):
+        try:
+            return jsonify(package_info(channel, package, version)), 200
+        except ResolvePackageNotFound:
+            abort(404, description=f"Error: {channel}/{package}{version} not found")
 
     @app.route("/parse", methods=["POST"])
     def parse():
@@ -34,7 +45,14 @@ def create_app():
             filename = f.filename if hasattr(f, "filename") else f.name
             body = f.read()
 
-        return parse_environment(filename, body)
+        return jsonify(parse_environment(filename, body)), 200
+
+    @app.errorhandler(404)
+    def not_found(e):
+        # note that we set the 404 status explicitly
+        return jsonify(error=404, text=str(e)), 404
+
+    app.register_error_handler(404, not_found)
 
     return app
 
