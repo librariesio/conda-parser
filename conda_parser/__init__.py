@@ -16,10 +16,7 @@ def create_app():
     @app.route("/info/<channel>/<package>", defaults={"version": ""})
     @app.route("/info/<channel>/<package>/<version>")
     def info(channel, package, version):
-        try:
-            return jsonify(package_info(channel, package, version)), 200
-        except ResolvePackageNotFound:
-            abort(404, description=f"Error: {channel}/{package}{version} not found")
+        return jsonify(package_info(channel, package, version)), 200
 
     @app.route("/parse", methods=["POST"])
     def parse():
@@ -47,12 +44,10 @@ def create_app():
 
         return jsonify(parse_environment(filename, body)), 200
 
-    @app.errorhandler(404)
+    @app.errorhandler(ResolvePackageNotFound)
     def not_found(e):
-        # note that we set the 404 status explicitly
-        return jsonify(error=404, text=str(e)), 404
-
-    app.register_error_handler(404, not_found)
+        message = f"Error: Package(s) not found: {e}"
+        return jsonify(error=404, text=message), 404
 
     return app
 
