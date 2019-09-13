@@ -97,7 +97,6 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
     assert data == expected_result_urllib3
 
 
-
 def test_info_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
