@@ -1,7 +1,10 @@
 from conda.api import Solver
+from urllib.parse import unquote
 
 
 def package_info(channel: str, package: str, version: str) -> dict:
+    channel, package, version = unquote_params(channel, package, version)
+
     # join the package and version together
     spec = f"{package}{version}"
 
@@ -29,3 +32,7 @@ def package_info(channel: str, package: str, version: str) -> dict:
         "version",
     ]
     return {k: record[k] for k in KEYS}
+
+
+def unquote_params(*args: str) -> list:
+    return [unquote(arg) for arg in args]
