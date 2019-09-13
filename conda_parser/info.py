@@ -34,5 +34,5 @@ def package_info(channel: str, package: str, version: str) -> dict:
     return {k: record[k] for k in KEYS}
 
 
-def unquote_params(channel: str, package: str, version: str) -> tuple:
-    return (unquote(channel), unquote(package), unquote(version))
+def unquote_params(*args: str) -> list:
+    return [unquote(arg) for arg in args]
