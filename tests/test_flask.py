@@ -88,7 +88,7 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
 
     # urlencoded
     response = client.get(
-        url_for("info", channel="pkgs%3Dmain", package="urllib3", version="==1.25.3"),
+        url_for("info", channel="pkgs%2Fmain", package="urllib3", version="%3D%3D1.25.3"),
         follow_redirects=True,
     )
     assert response.status == "200 OK"
