@@ -31,7 +31,7 @@ def package_info(channel: str, package: str, version: str) -> dict:
         "url",
         "version",
     ]
-    return {k: record[k] for k in KEYS}
+    return {k: record.get(k) for k in KEYS}
 
 
 def unquote_params(*args: str) -> list:
