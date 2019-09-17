@@ -16,7 +16,7 @@ def create_app():
     @app.route("/info")
     def info():
         package = request.args.get(
-            "package", request.args.get("name")
+            "name", request.args.get("package")
         )  # Support package, or name being key
         channel = request.args.get("channel", "pkgs/main")
         version = request.args.get("version", "")
