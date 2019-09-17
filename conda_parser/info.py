@@ -13,26 +13,7 @@ def package_info(channel: str, package: str, version: str) -> dict:
 
     # find the package passed in, it will be there, as Solver rasies if not found
     first_package_record = [dep for dep in packages if dep.name == package][0]
-    record = dict(first_package_record.dump())
-
-    # Only keep needed keys.
-    KEYS = [
-        "build",
-        "channel",
-        "depends",
-        "license",
-        "license_family",
-        "md5",
-        "name",
-        "platform",
-        "sha256",
-        "size",
-        "timestamp",
-        "url",
-        "version",
-    ]
-    return {k: record.get(k) for k in KEYS}
-
+    return dict(first_package_record.dump())
 
 def unquote_params(*args: str) -> list:
     return [unquote(arg) for arg in args]

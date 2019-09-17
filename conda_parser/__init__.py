@@ -13,9 +13,11 @@ def create_app():
     def index():
         return "OK"
 
-    @app.route("/info/<channel>/<package>", defaults={"version": ""})
-    @app.route("/info/<channel>/<package>/<version>")
-    def info(channel, package, version):
+    @app.route("/info")
+    def info():
+        channel = request.args.get("channel", "pkgs/main")
+        package = request.args.get("package", request.args.get("name"))  # Support package, or name being key
+        version = request.args.get("version", "")
         return jsonify(package_info(channel, package, version)), 200
 
     @app.route("/parse", methods=["POST"])
