@@ -13,8 +13,8 @@ def create_app():
     def index():
         return "OK"
 
-    @app.route("/info")
-    def info():
+    @app.route("/package")
+    def package():
         package = request.args.get(
             "name", request.args.get("package")
         )  # Support package, or name being key

@@ -64,12 +64,12 @@ def test_parse_file_not_found(client, mocker, record_not_found):
     }
 
 
-def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
+def test_package(client, mocker, solved_urllib3, expected_result_urllib3):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
 
     # name and channel
     response = client.get(
-        url_for("info", channel="anaconda", package="urllib3"), follow_redirects=True
+        url_for("package", channel="anaconda", package="urllib3"), follow_redirects=True
     )
     assert response.status == "200 OK"
     data = json.loads(response.data)
@@ -78,7 +78,7 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
 
     # all parameters
     response = client.get(
-        url_for("info", channel="anaconda", package="urllib3", version="==1.25.3"),
+        url_for("package", channel="anaconda", package="urllib3", version="==1.25.3"),
         follow_redirects=True,
     )
     assert response.status == "200 OK"
@@ -89,7 +89,7 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
     # urlencoded
     response = client.get(
         url_for(
-            "info", channel="pkgs%2Fmain", package="urllib3", version="%3D%3D1.25.3"
+            "package", channel="pkgs%2Fmain", package="urllib3", version="%3D%3D1.25.3"
         ),
         follow_redirects=True,
     )
@@ -99,11 +99,11 @@ def test_info(client, mocker, solved_urllib3, expected_result_urllib3):
     assert data == expected_result_urllib3
 
 
-def test_info_error(client, mocker, record_not_found):
+def test_package_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
     response = client.get(
-        url_for("info", channel="anaconda", package="whoami", version="==1.25.3"),
+        url_for("package", channel="anaconda", package="whoami", version="==1.25.3"),
         follow_redirects=True,
     )
     data = json.loads(response.data)
