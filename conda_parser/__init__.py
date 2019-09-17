@@ -5,6 +5,9 @@ from .info import package_info
 
 from conda.exceptions import ResolvePackageNotFound
 
+class MissingParameters(Exception):
+    pass
+
 
 def create_app():
     app = Flask(__name__)
@@ -15,12 +18,13 @@ def create_app():
 
     @app.route("/package")
     def package():
-        package = request.args.get(
-            "name", request.args.get("package")
-        )  # Support package, or name being key
+        name = request.args.get("name")  # Support package, or name being key
+        if not name:
+            raise MissingParameters
+
         channel = request.args.get("channel", "pkgs/main")
-        version = request.args.get("version", "")
-        return jsonify(package_info(channel, package, version)), 200
+        version = request.args.get("version", "") # Optional
+        return jsonify(package_info(channel, name, version)), 200
 
     @app.route("/parse", methods=["POST"])
     def parse():
@@ -51,6 +55,11 @@ def create_app():
     @app.errorhandler(ResolvePackageNotFound)
     def not_found(e):
         message = f"Error: Package(s) not found: {e}"
+        return jsonify(error=404, text=message), 404
+
+    @app.errorhandler(MissingParameters)
+    def missing_params(e):
+        message = f"Error: Please provide a `name=` query parameter"
         return jsonify(error=404, text=message), 404
 
     return app
