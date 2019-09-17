@@ -16,7 +16,9 @@ def create_app():
     @app.route("/info")
     def info():
         channel = request.args.get("channel", "pkgs/main")
-        package = request.args.get("package", request.args.get("name"))  # Support package, or name being key
+        package = request.args.get(
+            "package", request.args.get("name")
+        )  # Support package, or name being key
         version = request.args.get("version", "")
         return jsonify(package_info(channel, package, version)), 200
 

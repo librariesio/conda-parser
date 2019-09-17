@@ -15,5 +15,6 @@ def package_info(channel: str, package: str, version: str) -> dict:
     first_package_record = [dep for dep in packages if dep.name == package][0]
     return dict(first_package_record.dump())
 
+
 def unquote_params(*args: str) -> list:
     return [unquote(arg) for arg in args]

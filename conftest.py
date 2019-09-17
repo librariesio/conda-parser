@@ -199,6 +199,7 @@ def expected_result_urllib3():
         "version": "1.25.3",
     }
 
+
 @pytest.fixture
 def record_not_found():
     from conda.exceptions import ResolvePackageNotFound
