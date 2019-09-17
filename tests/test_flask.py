@@ -86,6 +86,7 @@ def test_package(client, mocker, solved_urllib3, expected_result_urllib3):
 
     assert data == expected_result_urllib3
 
+
 def test_package_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
@@ -101,10 +102,7 @@ def test_package_error(client, mocker, record_not_found):
 
 
 def test_missing_parameter(client):
-    response = client.get(
-        url_for("package"),
-        follow_redirects=True,
-    )
+    response = client.get(url_for("package"), follow_redirects=True)
     data = json.loads(response.data)
 
     assert response.status == "404 NOT FOUND"

@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify, abort
 
-from .parse import parse_environment
+from .exceptions import MissingParameters
 from .info import package_info
+from .parse import parse_environment
 
 from conda.exceptions import ResolvePackageNotFound
-
-class MissingParameters(Exception):
-    pass
 
 
 def create_app():
@@ -23,7 +21,7 @@ def create_app():
             raise MissingParameters
 
         channel = request.args.get("channel", "pkgs/main")
-        version = request.args.get("version", "") # Optional
+        version = request.args.get("version", "")  # Optional
         return jsonify(package_info(channel, name, version)), 200
 
     @app.route("/parse", methods=["POST"])
