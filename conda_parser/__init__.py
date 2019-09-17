@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, abort
 
-from .parse import parse_environment
+from .exceptions import MissingParameters
 from .info import package_info
+from .parse import parse_environment
 
 from conda.exceptions import ResolvePackageNotFound
 
@@ -13,10 +14,15 @@ def create_app():
     def index():
         return "OK"
 
-    @app.route("/info/<channel>/<package>", defaults={"version": ""})
-    @app.route("/info/<channel>/<package>/<version>")
-    def info(channel, package, version):
-        return jsonify(package_info(channel, package, version)), 200
+    @app.route("/package")
+    def package():
+        name = request.args.get("name")  # Support package, or name being key
+        if not name:
+            raise MissingParameters
+
+        channel = request.args.get("channel", "pkgs/main")
+        version = request.args.get("version", "")  # Optional
+        return jsonify(package_info(channel, name, version)), 200
 
     @app.route("/parse", methods=["POST"])
     def parse():
@@ -47,6 +53,11 @@ def create_app():
     @app.errorhandler(ResolvePackageNotFound)
     def not_found(e):
         message = f"Error: Package(s) not found: {e}"
+        return jsonify(error=404, text=message), 404
+
+    @app.errorhandler(MissingParameters)
+    def missing_params(e):
+        message = f"Error: Please provide a `name=` query parameter"
         return jsonify(error=404, text=message), 404
 
     return app

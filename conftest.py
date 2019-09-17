@@ -172,8 +172,11 @@ def solved_urllib3():
 @pytest.fixture
 def expected_result_urllib3():
     return {
+        "arch": None,
         "build": "py36_0",
+        "build_number": 0,
         "channel": "https://conda.anaconda.org/conda-forge/linux-64",
+        "constrains": [],
         "depends": [
             "certifi",
             "cryptography >=1.3.4",
@@ -182,6 +185,7 @@ def expected_result_urllib3():
             "pysocks >=1.5.6,<2.0,!=1.5.7",
             "python >=3.6,<3.7.0a0",
         ],
+        "fn": "urllib3-1.25.3-py36_0.tar.bz2",
         "license": "MIT",
         "license_family": "MIT",
         "md5": "98696f9f012d04bd7795a6a2febf66a0",
@@ -189,6 +193,7 @@ def expected_result_urllib3():
         "platform": None,
         "sha256": "d94eb3db911a6806f45a9fba50e49961c189d9fb32c44f8fd19902334616335e",
         "size": 191254,
+        "subdir": "linux-64",
         "timestamp": 1558705030958,
         "url": "https://conda.anaconda.org/conda-forge/linux-64/urllib3-1.25.3-py36_0.tar.bz2",
         "version": "1.25.3",
