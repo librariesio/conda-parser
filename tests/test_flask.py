@@ -94,7 +94,10 @@ def test_package_download(client, mocker, solved_urllib3, expected_result_urllib
     response = client.get(
         url_for("package", channel="anaconda", name="urllib3", download=True)
     )
-    assert response.location == "https://conda.anaconda.org/conda-forge/linux-64/urllib3-1.25.3-py36_0.tar.bz2"
+    assert (
+        response.location
+        == "https://conda.anaconda.org/conda-forge/linux-64/urllib3-1.25.3-py36_0.tar.bz2"
+    )
 
 
 def test_package_error(client, mocker, record_not_found):
