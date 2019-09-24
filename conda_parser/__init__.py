@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, redirect
 
 from .exceptions import MissingParameters
 from .info import package_info
@@ -22,7 +22,11 @@ def create_app():
 
         channel = request.args.get("channel", "pkgs/main")
         version = request.args.get("version", "")  # Optional
-        return jsonify(package_info(channel, name, version)), 200
+        _pkg = package_info(channel, name, version)
+        if request.args.get("download"):
+            return redirect(_pkg["url"])
+        else:
+            return jsonify(_pkg), 200
 
     @app.route("/parse", methods=["POST"])
     def parse():

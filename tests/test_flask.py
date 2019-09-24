@@ -87,6 +87,19 @@ def test_package(client, mocker, solved_urllib3, expected_result_urllib3):
     assert data == expected_result_urllib3
 
 
+def test_package_download(client, mocker, solved_urllib3, expected_result_urllib3):
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=solved_urllib3)
+
+    # name and channel
+    response = client.get(
+        url_for("package", channel="anaconda", name="urllib3", download=True)
+    )
+    assert (
+        response.location
+        == "https://conda.anaconda.org/conda-forge/linux-64/urllib3-1.25.3-py36_0.tar.bz2"
+    )
+
+
 def test_package_error(client, mocker, record_not_found):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=record_not_found)
 
