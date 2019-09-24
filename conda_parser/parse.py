@@ -3,8 +3,10 @@ import typing
 import yaml
 import re
 from conda.api import Solver
+from conda.exceptions import ResolvePackageNotFound
 from yaml import CDumper as Dumper
 from yaml import CLoader as Loader
+from pprint import pprint
 
 ALLOWED_EXTENSIONS = {"yml", "yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
@@ -58,19 +60,42 @@ def parse_environment(filename: str, environment_file: str) -> dict:
     # Ignore pip for now.
     environment["dependencies"] = clean_out_pip(environment["dependencies"])
 
-    lockfile = solve_environment(environment)
+    lockfile, bad_packages = solve_environment(environment)
     manifest = resolve_manifest_versions(environment["dependencies"], lockfile)
 
-    return {
+    output = {
         "manifest": sorted(manifest, key=lambda i: i["name"]),
         "lockfile": sorted(lockfile, key=lambda i: i["name"]),
         "channels": sorted(environment["channels"]),
     }
+    if bad_packages:
+        output["bad_packages"] = sorted(bad_packages)
+
+    return output
 
 
 def clean_out_pip(specs: list) -> list:
     """ Not supporting pip for now """
     return [spec for spec in specs if isinstance(spec, str)]
+
+
+def clean_out_urls(channels: list) -> list:
+    """
+    Grab channels from the environment file, but remove any that are urls.
+    From experience parsing these channels, they are mostly artifactory urls, which
+    are behind vpns, so we can't access them anyway
+    """
+    return [channel for channel in channels if "://" not in channel]
+
+
+def try_to_fix_specs(specs: list) -> list:
+    _specs = []
+    for dep in specs:
+        parts = [
+            d for d in dep.split("=") if d
+        ]  # Remove empty string coming between `==`
+        _specs.append("==".join(parts[:2]))
+    return _specs
 
 
 def solve_environment(environment: dict) -> dict:
@@ -81,14 +106,23 @@ def solve_environment(environment: dict) -> dict:
         returns a list of {"name": name, "requirement": requirement} values.
     """
     prefix = environment.get("prefix", ".")
-    channels = environment["channels"]
-    specs = environment["dependencies"]
+    channels = clean_out_urls(environment["channels"])
+    # pprint(environment)
+    specs = try_to_fix_specs(environment["dependencies"])
 
-    dependencies = Solver(prefix, channels, specs_to_add=specs).solve_final_state()
+    bad_specs = None
+    try:
+        dependencies = Solver(prefix, channels, specs_to_add=specs).solve_final_state()
+    except ResolvePackageNotFound as e:
+        good_specs, bad_specs = rigidly_parse_error_message(e.message, specs)
+        dependencies = Solver(
+            prefix, channels, specs_to_add=good_specs
+        ).solve_final_state()
 
-    return [
-        {"name": dep["name"], "requirement": dep["version"]} for dep in dependencies
-    ]
+    return (
+        [{"name": dep["name"], "requirement": dep["version"]} for dep in dependencies],
+        bad_specs,
+    )
 
 
 def resolve_manifest_versions(specs: list, dependencies: list) -> list:
@@ -102,3 +136,14 @@ def resolve_manifest_versions(specs: list, dependencies: list) -> list:
     spec_names = [reg.match(spec).group(0) for spec in specs]
 
     return [req for req in dependencies if req["name"] in spec_names]
+
+
+def rigidly_parse_error_message(message: str, specs: list) -> typing.Tuple[list, list]:
+    message = message.split("\n")  # split by newlines
+    message.pop(0)  # remove the error message header
+    chains = [chain.lstrip("  - ") for chain in message]
+
+    good = set(specs) - set(chains)
+    bad = set(chains)
+
+    return list(good), list(bad)

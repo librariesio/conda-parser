@@ -79,7 +79,7 @@ def test_solve_environment(mocker, fake_sqlite_deps):
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_sqlite_deps)
     sqlite_dependencies = solve_environment(
         {"channels": ["conda-forge"], "dependencies": ["sqlite"]}
-    )
+    )[0]
     assert {"name": "ncurses", "requirement": "6.1"} in sqlite_dependencies
 
 
