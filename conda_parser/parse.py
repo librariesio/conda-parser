@@ -2,13 +2,14 @@ import typing
 
 import yaml
 import re
+import os
 from conda.api import Solver
 from conda.exceptions import ResolvePackageNotFound
 from conda.models.match_spec import MatchSpec
 from yaml import CDumper as Dumper
 from yaml import CLoader as Loader
 
-SUPPORTED_EXTENSIONS = {"yml", "yaml"}  # Only file extensions that are allowed
+SUPPORTED_EXTENSIONS = {".yml", ".yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
     "dependencies",
     "channels",
@@ -18,9 +19,8 @@ SUPPORTED_CHANNELS = ["defaults", "nodefaults", "anaconda", "conda-forge"]
 
 
 def supported_filename(filename: str) -> bool:
-    return (
-        "." in filename and filename.rsplit(".", 1)[1].lower() in SUPPORTED_EXTENSIONS
-    )
+    _, extension = os.path.splitext(filename)
+    return extension in SUPPORTED_EXTENSIONS
 
 
 def read_environment(environment_file: str) -> dict:
