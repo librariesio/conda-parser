@@ -8,7 +8,7 @@ from conda.models.match_spec import MatchSpec
 from yaml import CDumper as Dumper
 from yaml import CLoader as Loader
 
-ALLOWED_EXTENSIONS = {"yml", "yaml"}  # Only file extensions that are allowed
+SUPPORTED_EXTENSIONS = {"yml", "yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
     "dependencies",
     "channels",
@@ -17,8 +17,10 @@ FILTER_KEYS = {
 SUPPORTED_CHANNELS = ["defaults", "nodefaults", "anaconda", "conda-forge"]
 
 
-def allowed_filename(filename: str) -> bool:
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+def supported_filename(filename: str) -> bool:
+    return (
+        "." in filename and filename.rsplit(".", 1)[1].lower() in SUPPORTED_EXTENSIONS
+    )
 
 
 def read_environment(environment_file: str) -> dict:
@@ -38,7 +40,7 @@ def clean_out_pip(specs: list) -> list:
 def clean_channels(channels: list) -> list:
     """
     Grab channels from the environment file, but remove any that
-    aren't in the allowed channels list.
+    aren't in the supported channels list.
     """
     channels_left = [channel for channel in channels if channel in SUPPORTED_CHANNELS]
 
@@ -75,7 +77,7 @@ def parse_environment(filename: str, environment_file: str) -> dict:
         return {"error": "No `file` provided."}
 
     # file must be in .yaml or .yml format
-    if not filename or not allowed_filename(filename):
+    if not filename or not supported_filename(filename):
         return {"error": "Please provide a `.yml` or `.yaml` environment file"}
 
     # Parse the file
