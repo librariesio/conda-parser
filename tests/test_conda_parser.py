@@ -1,6 +1,6 @@
 from conda_parser.parse import (
     FILTER_KEYS,
-    allowed_filename,
+    supported_filename,
     parse_environment,
     clean_out_pip,
     read_environment,
@@ -10,18 +10,18 @@ from conda_parser.parse import (
 )
 
 
-def test_allowed_filename_good():
+def test_supported_filename_good():
     """ Testing that yml and yaml are good filetypes """
     good_names = ["hello.yml", "hello.yaml"]
     for good_name in good_names:
-        assert allowed_filename(good_name) == True
+        assert supported_filename(good_name) == True
 
 
-def test_allowed_filename_bad():
+def test_supported_filename_bad():
     """ Testing that only yml and yaml files are allowed """
     bad_names = ["requirements.txt", "helloworld", ".bashrc"]
     for bad_name in bad_names:
-        assert allowed_filename(bad_name) == False
+        assert supported_filename(bad_name) == False
 
 
 def test_read_environment_filter_keys():
