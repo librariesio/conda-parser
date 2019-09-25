@@ -6,7 +6,6 @@ from conda.api import Solver
 from conda.exceptions import ResolvePackageNotFound
 from yaml import CDumper as Dumper
 from yaml import CLoader as Loader
-from pprint import pprint
 
 ALLOWED_EXTENSIONS = {"yml", "yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
@@ -107,7 +106,6 @@ def solve_environment(environment: dict) -> dict:
     """
     prefix = environment.get("prefix", ".")
     channels = clean_out_urls(environment["channels"])
-    # pprint(environment)
     specs = try_to_fix_specs(environment["dependencies"])
 
     bad_specs = None
