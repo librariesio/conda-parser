@@ -57,54 +57,6 @@ def fake_sqlite_deps():
 
 
 @pytest.fixture
-def package_and_version_strings():
-    return [
-        "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-        "alabaster=0.7.12=py37_0",
-        "anaconda-navigator=1.9.7=py37_0",
-        "asn1crypto=0.24.0=py37_0",
-        "astroid >=2.2.5",
-        "backports.functools_lru_cache=1.5=py_2",
-        "bzip2=1.0.8=h7b6447c_0",
-        "ca-certificates=2019.5.15=0",
-        "conda===4.7.11=py37",
-        "conda-build",
-        "conda-env 2.6.0",
-    ]
-
-
-@pytest.fixture
-def package_and_version_dicts():
-    return [
-        {"name": "_ipyw_jlab_nb_ext_conf", "version": "0.1.0"},
-        {"name": "alabaster", "version": "0.7.12"},
-        {"name": "anaconda-navigator", "version": "1.9.7"},
-        {"name": "asn1crypto", "version": "0.24.0"},
-        {"name": "astroid", "version": "2.2.5"},
-        {"name": "backports.functools_lru_cache", "version": "1.5"},
-        {"name": "blas", "version": "1.0"},
-        {"name": "bleach", "version": "3.1.0"},
-        {"name": "blosc", "version": "1.16.3"},
-        {"name": "bokeh", "version": "1.2.0"},
-        {"name": "boto", "version": "2.49.0"},
-        {"name": "bottleneck", "version": "1.2.1"},
-        {"name": "bzip2", "version": "1.0.8"},
-        {"name": "ca-certificates", "version": "2019.5.15"},
-        {"name": "cairo", "version": "1.14.12"},
-        {"name": "certifi", "version": "2019.6.16"},
-        {"name": "cffi", "version": "1.12.3"},
-        {"name": "chardet", "version": "3.0.4"},
-        {"name": "click", "version": "7.0"},
-        {"name": "cloudpickle", "version": "1.2.1"},
-        {"name": "clyent", "version": "1.2.2"},
-        {"name": "colorama", "version": "0.4.1"},
-        {"name": "conda", "version": "4.7.11"},
-        {"name": "conda-build", "version": "3.18.8"},
-        {"name": "conda-env", "version": "2.6.0"},
-    ]
-
-
-@pytest.fixture
 def solved_urllib3():
     fake = [
         PackageRecord(
@@ -204,4 +156,4 @@ def expected_result_urllib3():
 def record_not_found():
     from conda.exceptions import ResolvePackageNotFound
 
-    return (ResolvePackageNotFound(bad_deps=[["whoami", "==1.25.3"]]),)
+    return ResolvePackageNotFound(bad_deps=[["whoami", "==1.25.3"]])
