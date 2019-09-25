@@ -55,13 +55,17 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 def test_parse_file_not_found(client, mocker, record_not_found):
     """ testing parsing POST """
     mocker.patch(
-        "conda.api.Solver.solve_final_state",
-        side_effect=[record_not_found, record_not_found],
+        "conda.api.Solver.solve_final_state", side_effect=[record_not_found, []]
     )
 
     response = _post_urlencoded(client, "tests/fixtures/just_numpy.yml", "parse")
-    assert response.status == "404 NOT FOUND"
-    assert json.loads(response.data) == {"bad_packages": "whoami"}
+    assert response.status == "200 OK"
+    assert json.loads(response.data) == {
+        "bad_packages": ["whoami -> ==1.25.3"],
+        "channels": ["anaconda"],
+        "lockfile": [],
+        "manifest": [],
+    }
 
 
 def test_package(client, mocker, solved_urllib3, expected_result_urllib3):

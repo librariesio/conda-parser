@@ -204,4 +204,4 @@ def expected_result_urllib3():
 def record_not_found():
     from conda.exceptions import ResolvePackageNotFound
 
-    return (ResolvePackageNotFound(bad_deps=[["whoami", "==1.25.3"]]),)
+    return ResolvePackageNotFound(bad_deps=[["whoami", "==1.25.3"]])
