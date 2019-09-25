@@ -47,7 +47,6 @@ def clean_out_urls(channels: list) -> list:
         return ["defaults"]
 
 
-
 def match_specs(specs: list) -> list:
     """
     Specs come in in a variety of formats, get the name and version back,
