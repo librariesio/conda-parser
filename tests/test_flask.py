@@ -61,7 +61,7 @@ def test_parse_file_not_found(client, mocker, record_not_found):
     response = _post_urlencoded(client, "tests/fixtures/just_numpy.yml", "parse")
     assert response.status == "200 OK"
     assert json.loads(response.data) == {
-        "bad_packages": ["whoami -> ==1.25.3"],
+        "bad_specs": ["whoami -> ==1.25.3"],
         "channels": ["anaconda"],
         "lockfile": [],
         "manifest": [],

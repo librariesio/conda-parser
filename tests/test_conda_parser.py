@@ -6,6 +6,7 @@ from conda_parser.parse import (
     read_environment,
     solve_environment,
     resolve_manifest_versions,
+    pin_spec_to_name_version,
 )
 
 
@@ -112,3 +113,21 @@ def test_resolve_manifest_versions(
         {"name": "conda-build", "version": "3.18.8"},
         {"name": "conda-env", "version": "2.6.0"},
     ]
+
+
+def test_pin_spec_to_name_version():
+    inputs = {
+        "numpy": "numpy",
+        "numpy 1.8*": "numpy 1.8.*",
+        "numpy 1.8.1": "numpy 1.8.1",
+        "numpy >=1.8": "numpy >=1.8",
+        "numpy ==1.8.1": "numpy 1.8.1",
+        "numpy 1.8|1.8*": "numpy 1.8|1.8.*",
+        "numpy >=1.8,<2": "numpy >=1.8,<2",
+        "numpy >=1.8,<2|1.9": "numpy >=1.8,<2|1.9",
+        "numpy 1.8.1 py27_0": "numpy 1.8.1",
+        "numpy=1.8.1=py27_0": "numpy 1.8.1",
+    }
+
+    for testing, expected in inputs.items():
+        assert (pin_spec_to_name_version([testing])) == [expected]

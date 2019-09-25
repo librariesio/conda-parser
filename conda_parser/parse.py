@@ -4,6 +4,7 @@ import yaml
 import re
 from conda.api import Solver
 from conda.exceptions import ResolvePackageNotFound
+from conda.models.match_spec import MatchSpec
 from yaml import CDumper as Dumper
 from yaml import CLoader as Loader
 
@@ -59,16 +60,15 @@ def parse_environment(filename: str, environment_file: str) -> dict:
     # Ignore pip for now.
     environment["dependencies"] = clean_out_pip(environment["dependencies"])
 
-    lockfile, bad_packages = solve_environment(environment)
+    lockfile, bad_specs = solve_environment(environment)
     manifest = resolve_manifest_versions(environment["dependencies"], lockfile)
 
     output = {
         "manifest": sorted(manifest, key=lambda i: i["name"]),
         "lockfile": sorted(lockfile, key=lambda i: i["name"]),
         "channels": sorted(environment["channels"]),
+        "bad_specs": sorted(bad_specs),
     }
-    if bad_packages:
-        output["bad_packages"] = sorted(bad_packages)
 
     return output
 
@@ -87,13 +87,16 @@ def clean_out_urls(channels: list) -> list:
     return [channel for channel in channels if "://" not in channel]
 
 
-def try_to_fix_specs(specs: list) -> list:
+def pin_spec_to_name_version(specs: list) -> list:
+    """
+        Specs come in in a variety of formats, get the name and version back,
+        this removes the build parameter, and always returns the format like:
+        `urllib3 >=1.25.3` if it has a version and just `urllib3` if not.
+    """
     _specs = []
     for dep in specs:
-        parts = [
-            d for d in dep.split("=") if d
-        ]  # Remove empty string coming between `==`
-        _specs.append("==".join(parts[:2]))
+        spec = MatchSpec(dep)
+        _specs.append(f"{spec.name} {spec.version or ''}".rstrip())
     return _specs
 
 
@@ -106,15 +109,15 @@ def solve_environment(environment: dict) -> dict:
     """
     prefix = environment.get("prefix", ".")
     channels = clean_out_urls(environment["channels"])
-    specs = try_to_fix_specs(environment["dependencies"])
+    specs = pin_spec_to_name_version(environment["dependencies"])
 
-    bad_specs = None
+    bad_specs = []
     try:
         dependencies = Solver(prefix, channels, specs_to_add=specs).solve_final_state()
     except ResolvePackageNotFound as e:
-        good_specs, bad_specs = rigidly_parse_error_message(e.message, specs)
+        ok_specs, bad_specs = rigidly_parse_error_message(e.message, specs)
         dependencies = Solver(
-            prefix, channels, specs_to_add=good_specs
+            prefix, channels, specs_to_add=ok_specs
         ).solve_final_state()
 
     return (
@@ -130,9 +133,11 @@ def resolve_manifest_versions(specs: list, dependencies: list) -> list:
 
         returns a list of {"name": name, "requirement": requirement} values.
     """
+    # Make a regex to match the package part of a spec
     reg = re.compile(r"[\w\-\.]+")
+    # Find all package names that were passed in as specs
     spec_names = [reg.match(spec).group(0) for spec in specs]
-
+    # Return the matching spec with its version because specs don't always specify version
     return [req for req in dependencies if req["name"] in spec_names]
 
 
