@@ -1,12 +1,12 @@
-import typing
-
-import yaml
-import re
 import os
+import re
+import typing
+import yaml
+
 from conda.api import Solver
 from conda.exceptions import ResolvePackageNotFound
 from conda.models.match_spec import MatchSpec
-from yaml import CDumper as Dumper
+
 from yaml import CLoader as Loader
 
 SUPPORTED_EXTENSIONS = {".yml", ".yaml"}  # Only file extensions that are allowed
