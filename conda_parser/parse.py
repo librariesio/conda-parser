@@ -20,7 +20,7 @@ SUPPORTED_CHANNELS = ["defaults", "nodefaults", "anaconda", "conda-forge"]
 
 def supported_filename(filename: str) -> bool:
     _, extension = os.path.splitext(filename)
-    return extension in SUPPORTED_EXTENSIONS
+    return extension.lower() in SUPPORTED_EXTENSIONS
 
 
 def read_environment(environment_file: str) -> dict:

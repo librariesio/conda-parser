@@ -12,7 +12,7 @@ from conda_parser.parse import (
 
 def test_supported_filename_good():
     """ Testing that yml and yaml are good filetypes """
-    good_names = ["hello.yml", "hello.yaml"]
+    good_names = ["hello.yml", "hello.yaml", "hello.YaMl"]
     for good_name in good_names:
         assert supported_filename(good_name) == True
 
