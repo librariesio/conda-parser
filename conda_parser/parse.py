@@ -14,12 +14,7 @@ FILTER_KEYS = {
     "channels",
     "prefix",
 }  # What keys we want back from the environment file
-SUPPORTED_CHANNELS = [
-    "defaults",
-    "nodefaults",
-    "anaconda",
-    "conda-forge"
-]
+SUPPORTED_CHANNELS = ["defaults", "nodefaults", "anaconda", "conda-forge"]
 
 
 def allowed_filename(filename: str) -> bool:

@@ -108,13 +108,14 @@ def test_match_specs():
     for testing, expected in inputs.items():
         assert (match_specs([testing])) == [expected]
 
+
 def test_clean_channels():
     inputs = [
         (["defaults", "anaconda"], ["defaults", "anaconda"]),
         (["defaults"], ["defaults"]),
         (["nodefaults", "anaconda"], ["nodefaults", "anaconda"]),
         (["nodefaults", "https://fake-artifactory.com"], ["nodefaults"]),
-        (["https://fake-artifactory.com", "github.com/something-what"], ["defaults"])
+        (["https://fake-artifactory.com", "github.com/something-what"], ["defaults"]),
     ]
 
     for _input, _output in inputs:
