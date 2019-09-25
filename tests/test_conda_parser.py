@@ -92,6 +92,7 @@ def test_clean_out_pip():
 def test_match_specs():
     inputs = {
         "numpy": {"name": "numpy", "requirement": ""},
+        "numpy 1.8.*": {"name": "numpy", "requirement": "1.8.*"},
         "numpy 1.8*": {"name": "numpy", "requirement": "1.8.*"},
         "numpy 1.8.1": {"name": "numpy", "requirement": "1.8.1"},
         "numpy >=1.8": {"name": "numpy", "requirement": ">=1.8"},
