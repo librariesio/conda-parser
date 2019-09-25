@@ -9,13 +9,13 @@ from conda.models.match_spec import MatchSpec
 
 from yaml import CLoader
 
+SUPPORTED_CHANNELS = {"defaults", "nodefaults", "anaconda", "conda-forge"}
 SUPPORTED_EXTENSIONS = {".yml", ".yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
     "dependencies",
     "channels",
     "prefix",
 }  # What keys we want back from the environment file
-SUPPORTED_CHANNELS = {"defaults", "nodefaults", "anaconda", "conda-forge"}
 
 
 def supported_filename(filename: str) -> bool:
