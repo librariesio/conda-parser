@@ -5,7 +5,6 @@ from conda_parser.parse import (
     clean_out_pip,
     read_environment,
     solve_environment,
-    resolve_manifest_versions,
     match_specs,
 )
 
@@ -88,31 +87,6 @@ def test_clean_out_pip():
     """ testing removing pip from specs """
     specs = ["zlib=1.2.11=0", {"pip": ["werkzeug==0.12.2"]}]
     assert clean_out_pip(specs) == ["zlib=1.2.11=0"]
-
-
-def test_resolve_manifest_versions(
-    package_and_version_strings, package_and_version_dicts
-):
-    resolved = resolve_manifest_versions(
-        package_and_version_strings, package_and_version_dicts
-    )
-
-    # Assert at least some change was made
-    assert package_and_version_strings != resolved
-
-    assert resolved == [
-        {"name": "_ipyw_jlab_nb_ext_conf", "version": "0.1.0"},
-        {"name": "alabaster", "version": "0.7.12"},
-        {"name": "anaconda-navigator", "version": "1.9.7"},
-        {"name": "asn1crypto", "version": "0.24.0"},
-        {"name": "astroid", "version": "2.2.5"},
-        {"name": "backports.functools_lru_cache", "version": "1.5"},
-        {"name": "bzip2", "version": "1.0.8"},
-        {"name": "ca-certificates", "version": "2019.5.15"},
-        {"name": "conda", "version": "4.7.11"},
-        {"name": "conda-build", "version": "3.18.8"},
-        {"name": "conda-env", "version": "2.6.0"},
-    ]
 
 
 def test_match_specs():
