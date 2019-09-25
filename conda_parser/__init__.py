@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, abort, redirect
 
 from .exceptions import MissingParameters
 from .info import package_info
-from .parse import parse_environment, rigidly_parse_error_message
+from .parse import parse_environment
 
 from conda.exceptions import ResolvePackageNotFound
 
