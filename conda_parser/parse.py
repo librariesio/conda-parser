@@ -147,8 +147,7 @@ def resolve_manifest_versions(specs: list, dependencies: list) -> list:
 
 def rigidly_parse_error_message(message: str, specs: list) -> typing.Tuple[list, list]:
     message = message.split("\n")  # split by newlines
-    message.pop(0)  # remove the error message header
-    chains = [chain.lstrip("  - ") for chain in message]
+    chains = [chain.lstrip("  - ") for chain in message if chain]
 
     good = set(specs) - set(chains)
     bad = set(chains)
