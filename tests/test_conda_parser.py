@@ -16,9 +16,7 @@ def test_supported_filename_good():
     for good_name in good_names:
         assert supported_filename(good_name) == True
 
-
-def test_supported_filename_bad():
-    """ Testing that only yml and yaml files are allowed """
+    # Testing that only yml and yaml files are allowed
     bad_names = ["requirements.txt", "helloworld", ".bashrc"]
     for bad_name in bad_names:
         assert supported_filename(bad_name) == False
