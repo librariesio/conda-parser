@@ -6,7 +6,7 @@ from conda_parser.parse import (
     read_environment,
     solve_environment,
     resolve_manifest_versions,
-    pin_spec_to_name_version,
+    match_specs,
 )
 
 
@@ -78,9 +78,9 @@ def test_parse_environment_errors_no_dependencies():
 def test_solve_environment(mocker, fake_sqlite_deps):
     """ testing parsing POST """
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_sqlite_deps)
-    sqlite_dependencies = solve_environment(
-        {"channels": ["conda-forge"], "dependencies": ["sqlite"]}
-    )[0]
+    sqlite_dependencies, _ = solve_environment(
+        {"channels": ["conda-forge"], "dependencies": [{"name": "sqlite"}]}
+    )
     assert {"name": "ncurses", "requirement": "6.1"} in sqlite_dependencies
 
 
@@ -115,19 +115,19 @@ def test_resolve_manifest_versions(
     ]
 
 
-def test_pin_spec_to_name_version():
+def test_match_specs():
     inputs = {
-        "numpy": "numpy",
-        "numpy 1.8*": "numpy 1.8.*",
-        "numpy 1.8.1": "numpy 1.8.1",
-        "numpy >=1.8": "numpy >=1.8",
-        "numpy ==1.8.1": "numpy 1.8.1",
-        "numpy 1.8|1.8*": "numpy 1.8|1.8.*",
-        "numpy >=1.8,<2": "numpy >=1.8,<2",
-        "numpy >=1.8,<2|1.9": "numpy >=1.8,<2|1.9",
-        "numpy 1.8.1 py27_0": "numpy 1.8.1",
-        "numpy=1.8.1=py27_0": "numpy 1.8.1",
+        "numpy": {"name": "numpy", "requirement": ""},
+        "numpy 1.8*": {"name": "numpy", "requirement": "1.8.*"},
+        "numpy 1.8.1": {"name": "numpy", "requirement": "1.8.1"},
+        "numpy >=1.8": {"name": "numpy", "requirement": ">=1.8"},
+        "numpy ==1.8.1": {"name": "numpy", "requirement": "1.8.1"},
+        "numpy 1.8|1.8*": {"name": "numpy", "requirement": "1.8|1.8.*"},
+        "numpy >=1.8,<2": {"name": "numpy", "requirement": ">=1.8,<2"},
+        "numpy >=1.8,<2|1.9": {"name": "numpy", "requirement": ">=1.8,<2|1.9"},
+        "numpy 1.8.1 py27_0": {"name": "numpy", "requirement": "1.8.1"},
+        "numpy=1.8.1=py27_0": {"name": "numpy", "requirement": "1.8.1"},
     }
 
     for testing, expected in inputs.items():
-        assert (pin_spec_to_name_version([testing])) == [expected]
+        assert (match_specs([testing])) == [expected]

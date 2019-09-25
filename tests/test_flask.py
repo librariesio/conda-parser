@@ -64,7 +64,7 @@ def test_parse_file_not_found(client, mocker, record_not_found):
         "bad_specs": ["whoami -> ==1.25.3"],
         "channels": ["anaconda"],
         "lockfile": [],
-        "manifest": [],
+        "manifest": [{"name": "numpy", "requirement": "1.16.4"}],
     }
 
 
