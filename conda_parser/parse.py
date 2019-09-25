@@ -14,6 +14,12 @@ FILTER_KEYS = {
     "channels",
     "prefix",
 }  # What keys we want back from the environment file
+SUPPORTED_CHANNELS = [
+    "defaults",
+    "nodefaults",
+    "anaconda",
+    "conda-forge"
+]
 
 
 def allowed_filename(filename: str) -> bool:
@@ -34,17 +40,16 @@ def clean_out_pip(specs: list) -> list:
     return [spec for spec in specs if isinstance(spec, str)]
 
 
-def clean_out_urls(channels: list) -> list:
+def clean_channels(channels: list) -> list:
     """
-    Grab channels from the environment file, but remove any that are urls.
-    From experience parsing these channels, they are mostly artifactory urls, which
-    are behind vpns, so we can't access them anyway
+    Grab channels from the environment file, but remove any that
+    aren't in the allowed channels list.
     """
-    channels_left = [channel for channel in channels if "://" not in channel]
-    if channels_left:
-        return channels_left
-    else:
-        return ["defaults"]
+    channels_left = [channel for channel in channels if channel in SUPPORTED_CHANNELS]
+
+    if "nodefaults" not in channels_left and "defaults" not in channels_left:
+        channels_left += ["defaults"]
+    return channels_left
 
 
 def match_specs(specs: list) -> list:
@@ -91,14 +96,14 @@ def parse_environment(filename: str, environment_file: str) -> dict:
     manifest = match_specs(clean_out_pip(environment["dependencies"]))
     environment["dependencies"] = manifest
 
-    environment["channels"] = clean_out_urls(environment.get("channels", ["defaults"]))
+    environment["channels"] = clean_channels(environment.get("channels", ["defaults"]))
 
     lockfile, bad_specs = solve_environment(environment)
 
     output = {
         "manifest": sorted(manifest, key=lambda i: i["name"]),
         "lockfile": sorted(lockfile, key=lambda i: i["name"]),
-        "channels": sorted(environment["channels"]),
+        "channels": environment["channels"],
         "bad_specs": sorted(bad_specs),
     }
 

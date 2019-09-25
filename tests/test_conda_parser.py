@@ -5,6 +5,7 @@ from conda_parser.parse import (
     clean_out_pip,
     read_environment,
     solve_environment,
+    clean_channels,
     match_specs,
 )
 
@@ -106,3 +107,15 @@ def test_match_specs():
 
     for testing, expected in inputs.items():
         assert (match_specs([testing])) == [expected]
+
+def test_clean_channels():
+    inputs = [
+        (["defaults", "anaconda"], ["defaults", "anaconda"]),
+        (["defaults"], ["defaults"]),
+        (["nodefaults", "anaconda"], ["nodefaults", "anaconda"]),
+        (["nodefaults", "https://fake-artifactory.com"], ["nodefaults"]),
+        (["https://fake-artifactory.com", "github.com/something-what"], ["defaults"])
+    ]
+
+    for _input, _output in inputs:
+        assert clean_channels(_input) == _output

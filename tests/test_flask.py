@@ -48,7 +48,7 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 
     data = json.loads(response.data)
 
-    assert data["channels"] == ["anaconda"]
+    assert data["channels"] == ["anaconda", "defaults"]
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
 
 
@@ -62,7 +62,7 @@ def test_parse_file_not_found(client, mocker, record_not_found):
     assert response.status == "200 OK"
     assert json.loads(response.data) == {
         "bad_specs": ["whoami -> ==1.25.3"],
-        "channels": ["anaconda"],
+        "channels": ["anaconda", "defaults"],
         "lockfile": [],
         "manifest": [{"name": "numpy", "requirement": "1.16.4"}],
     }
