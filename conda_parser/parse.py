@@ -7,7 +7,7 @@ from conda.api import Solver
 from conda.exceptions import ResolvePackageNotFound
 from conda.models.match_spec import MatchSpec
 
-from yaml import CLoader as Loader
+from yaml import CLoader
 
 SUPPORTED_EXTENSIONS = {".yml", ".yaml"}  # Only file extensions that are allowed
 FILTER_KEYS = {
@@ -28,7 +28,7 @@ def read_environment(environment_file: str) -> dict:
     Loads the file into yaml and returns the keys that we care about.
         example: ignores `prefix:` settings in environment.yml
     """
-    environment = yaml.load(environment_file, Loader=Loader)
+    environment = yaml.load(environment_file, Loader=CLoader)
     return {k: v for k, v in environment.items() if k in FILTER_KEYS}
 
 
