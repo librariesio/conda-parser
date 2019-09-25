@@ -87,12 +87,12 @@ def parse_environment(filename: str, environment_file: str) -> dict:
     manifest = match_specs(clean_out_pip(environment["dependencies"]))
     environment["dependencies"] = manifest
 
-    environment["channels"] = clean_out_urls(environment["channels"])
+    environment["channels"] = clean_out_urls(environment.get("channels", ["defaults"]))
 
     lockfile, bad_specs = solve_environment(environment)
 
     output = {
-        "manifest": sorted(environment["dependencies"]),
+        "manifest": sorted(manifest, key=lambda i: i["name"]),
         "lockfile": sorted(lockfile, key=lambda i: i["name"]),
         "channels": sorted(environment["channels"]),
         "bad_specs": sorted(bad_specs),
