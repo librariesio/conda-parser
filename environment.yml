@@ -1,7 +1,6 @@
 name: conda-parser
 channels:
-  - anaconda
-  - conda-forge
+  - defaults
 dependencies:
   - black
   - conda
@@ -12,9 +11,10 @@ dependencies:
   - nginx
   - pip
   - pytest
-  - pytest-flask
   - pytest-mock
   - pytest-cov
   - python=3.7.4
   - pyyaml
   - yaml
+  - pip:
+    - pytest-flask
