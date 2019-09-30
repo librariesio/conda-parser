@@ -10,7 +10,11 @@ from conda.models.match_spec import MatchSpec
 from yaml import CLoader
 
 SUPPORTED_CHANNELS = {"defaults", "nodefaults", "anaconda", "conda-forge"}
-SUPPORTED_EXTENSIONS = {".yml", ".yaml"}  # Only file extensions that are allowed
+SUPPORTED_EXTENSIONS = {
+    ".yml",
+    ".yaml",
+    ".lock",
+}  # Only file extensions that are allowed
 FILTER_KEYS = {
     "dependencies",
     "channels",
@@ -18,9 +22,17 @@ FILTER_KEYS = {
 }  # What keys we want back from the environment file
 
 
-def supported_filename(filename: str) -> bool:
+def _get_extension(filename: str) -> str:
     _, extension = os.path.splitext(filename)
-    return extension.lower() in SUPPORTED_EXTENSIONS
+    return extension.lower()
+
+
+def supported_filename(filename: str) -> bool:
+    return _get_extension(filename) in SUPPORTED_EXTENSIONS
+
+
+def is_lock(filename: str) -> bool:
+    return _get_extension(filename) == ".lock"
 
 
 def read_environment(environment_file: str) -> dict:
@@ -61,7 +73,9 @@ def match_specs(specs: list) -> list:
     return _specs
 
 
-def parse_environment(filename: str, environment_file: str) -> dict:
+def parse_environment(
+    filename: str, environment_file: str, force_solve: bool = False
+) -> dict:
     """
         Loads a file, checks some common error conditions, tries its best
     to see if it is an actual Conda environment.yml file, and if it is,
@@ -95,11 +109,14 @@ def parse_environment(filename: str, environment_file: str) -> dict:
 
     environment["channels"] = clean_channels(environment.get("channels", ["defaults"]))
 
-    lockfile, bad_specs = solve_environment(environment)
+    if force_solve or is_lock(filename):
+        lockfile, bad_specs = solve_environment(environment)
+    else:
+        lockfile, bad_specs = [], []
 
     output = {
-        "manifest": sorted(manifest, key=lambda i: i["name"]),
-        "lockfile": sorted(lockfile, key=lambda i: i["name"]),
+        "manifest": sorted(manifest, key=lambda i: i.get("name", "")),
+        "lockfile": sorted(lockfile, key=lambda i: i.get("name", "")),
         "channels": environment["channels"],
         "bad_specs": sorted(bad_specs),
     }

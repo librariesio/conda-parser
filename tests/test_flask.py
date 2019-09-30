@@ -11,28 +11,25 @@ def test_index(client):
     assert client.get(url_for("index")).status_code == 200
 
 
-def _post_multipart(client, name, view="parse"):
+def _post_multipart(client, name, view="parse", force_solve=True):
     with open(name, "rb") as all_styles:
         data = {"file": (io.BytesIO(all_styles.read()), name)}
-
-    return client.post(
-        url_for(view),
-        data=data,
-        follow_redirects=True,
-        content_type="multipart/form-data",
-    )
+    return _post(client, data, view, "multipart/form-data", force_solve)
 
 
-def _post_urlencoded(client, name, view="parse"):
+def _post_urlencoded(client, name, view="parse", force_solve=True):
     with open(name, "rb") as all_styles:
         data = {"file": all_styles.read(), "filename": name}
+    return _post(client, data, view, "application/x-www-form-urlencoded", force_solve)
 
-    return client.post(
-        url_for(view),
-        data=data,
-        follow_redirects=True,
-        content_type="application/x-www-form-urlencoded",
-    )
+
+def _post(client, data, view, content_type, force_solve=True):
+    if force_solve:
+        url = url_for(view, force_solve=force_solve)
+    else:
+        url = url_for(view)
+
+    return client.post(url, data=data, follow_redirects=True, content_type=content_type)
 
 
 def test_parse_file(client, mocker, fake_numpy_deps):
@@ -46,6 +43,32 @@ def test_parse_file(client, mocker, fake_numpy_deps):
 
     assert response.status == "200 OK"
 
+    data = json.loads(response.data)
+
+    assert data["channels"] == ["anaconda", "defaults"]
+    assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
+
+
+def test_parse_file_no_force(client, mocker, fake_numpy_deps):
+    response = _post_multipart(
+        client, "tests/fixtures/just_numpy.yml", "parse", force_solve=False
+    )
+
+    assert response.status == "200 OK"
+    data = json.loads(response.data)
+
+    assert data["channels"] == ["anaconda", "defaults"]
+    assert data["lockfile"] == []
+    assert data["manifest"] == [{"name": "numpy", "requirement": "1.16.4"}]
+
+
+def test_parse_file_no_force_lockfile(client, mocker, fake_numpy_deps):
+    mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_numpy_deps)
+    response = _post_multipart(
+        client, "tests/fixtures/numpy.yml.lock", "parse", force_solve=False
+    )
+
+    assert response.status == "200 OK"
     data = json.loads(response.data)
 
     assert data["channels"] == ["anaconda", "defaults"]

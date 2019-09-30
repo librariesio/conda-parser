@@ -52,7 +52,8 @@ def create_app():
             filename = f.filename if hasattr(f, "filename") else f.name
             body = f.read()
 
-        return jsonify(parse_environment(filename, body)), 200
+        force_solve = bool(request.args.get("force_solve", False))
+        return jsonify(parse_environment(filename, body, force_solve)), 200
 
     @app.errorhandler(ResolvePackageNotFound)
     def not_found(e):
