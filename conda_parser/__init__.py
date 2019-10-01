@@ -43,7 +43,7 @@ def create_app():
             Query Parameters:
                 [force_solve=1]
                     existance of any value will cause this flag to be set and solve
-                    whethere there is a lock file or not.
+                    whether there is a lock file or not.
             Returns:
                 json with "error" or with "dependencies"/"channels"
         """
