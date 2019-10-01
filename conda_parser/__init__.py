@@ -40,9 +40,15 @@ def create_app():
                 application/x-www-form-urlencoded:
                     file: the text of the environment file
                     filename: the filename (needs to be .yml or .yaml)
+            Query Parameters:
+                [force_solve=1]
+                    existance of any value will cause this flag to be set and solve
+                    whethere there is a lock file or not.
             Returns:
                 json with "error" or with "dependencies"/"channels"
         """
+        force_solve = bool(request.args.get("force_solve", False))
+
         # get the file from either files or form
         if request.content_type.startswith("application/x-www-form-urlencoded"):
             body = request.form.get("file")
@@ -52,7 +58,6 @@ def create_app():
             filename = f.filename if hasattr(f, "filename") else f.name
             body = f.read()
 
-        force_solve = bool(request.args.get("force_solve", False))
         return jsonify(parse_environment(filename, body, force_solve)), 200
 
     @app.errorhandler(ResolvePackageNotFound)

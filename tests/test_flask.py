@@ -32,7 +32,7 @@ def _post(client, data, view, content_type, force_solve=True):
     return client.post(url, data=data, follow_redirects=True, content_type=content_type)
 
 
-def test_parse_file(client, mocker, fake_numpy_deps):
+def test_parse_file_force(client, mocker, fake_numpy_deps):
     """ testing parsing POST """
     mocker.patch("conda.api.Solver.solve_final_state", side_effect=fake_numpy_deps)
 
@@ -72,6 +72,7 @@ def test_parse_file_no_force_lockfile(client, mocker, fake_numpy_deps):
     data = json.loads(response.data)
 
     assert data["channels"] == ["anaconda", "defaults"]
+    assert {"name": "numpy", "requirement": "1.16.4"} in data["manifest"]
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
 
 
