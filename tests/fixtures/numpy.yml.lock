@@ -1,0 +1,5 @@
+name: numpy-lock
+channels:
+  - anaconda
+dependencies:
+  - numpy 1.16.4
