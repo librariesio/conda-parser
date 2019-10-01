@@ -111,12 +111,15 @@ def parse_environment(
 
     if force_solve or is_lock(filename):
         lockfile, bad_specs = solve_environment(environment)
+        # Sort the lockfile
+        lockfile = sorted(lockfile, key=lambda i: i.get("name", ""))
     else:
-        lockfile, bad_specs = [], []
+        lockfile = None
+        bad_specs = []
 
     output = {
         "manifest": sorted(manifest, key=lambda i: i.get("name", "")),
-        "lockfile": sorted(lockfile, key=lambda i: i.get("name", "")),
+        "lockfile": lockfile,
         "channels": environment["channels"],
         "bad_specs": sorted(bad_specs),
     }

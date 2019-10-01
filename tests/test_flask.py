@@ -58,7 +58,7 @@ def test_parse_file_no_force(client, mocker, fake_numpy_deps):
     data = json.loads(response.data)
 
     assert data["channels"] == ["anaconda", "defaults"]
-    assert data["lockfile"] == []
+    assert data["lockfile"] == None
     assert data["manifest"] == [{"name": "numpy", "requirement": "1.16.4"}]
 
 
@@ -76,7 +76,7 @@ def test_parse_file_no_force_lockfile(client, mocker, fake_numpy_deps):
     assert {"name": "numpy-base", "requirement": "1.16.4"} in data["lockfile"]
 
 
-def test_parse_file_not_found(client, mocker, record_not_found):
+def test_parse_not_found_force(client, mocker, record_not_found):
     """ testing parsing POST """
     mocker.patch(
         "conda.api.Solver.solve_final_state", side_effect=[record_not_found, []]
