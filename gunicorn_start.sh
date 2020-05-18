@@ -7,4 +7,5 @@ gunicorn --bind 0.0.0.0:$PORT \
   --bind unix:/app/conda_parser.sock \
   --error-logfile - \
   --timeout=3600\
+  -w 2 --threads 4 \
   conda_parser.wsgi:app
