@@ -4,7 +4,7 @@ A tiny python web service for parsing dependency information from `environment.y
 
 ## Parsing
 
-We use Conda.models.MatchSpec to do version matching, as such, environment.yml files should match one of the following formats in order to parse properly.
+We use Conda.models.MatchSpec to do version matching, as such, environment.yml dependencies should match one of the following formats in order to parse properly.
 
   * `numpy`
   * `numpy 1.8.*`
