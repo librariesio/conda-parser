@@ -2,6 +2,23 @@
 
 A tiny python web service for parsing dependency information from `environment.yml` files for [Libraries.io](https://libraries.io).
 
+## Parsing
+
+We use Conda.models.MatchSpec to do version matching, as such, environment.yml dependencies should match one of the following formats in order to parse properly.
+
+  * `numpy`
+  * `numpy 1.8.*`
+  * `numpy 1.8*`
+  * `numpy 1.8.1`
+  * `numpy >=1.8`
+  * `numpy ==1.8.1`
+  * `numpy 1.8|1.8*`
+  * `numpy >=1.8,<2`
+  * `numpy >=1.8,<2|1.9`
+  * `numpy 1.8.1 py27_0`
+  * `numpy=1.8.1=py27_0`
+
+
 ## Building and running options.
 
 ### Docker
